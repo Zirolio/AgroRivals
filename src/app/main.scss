@@ -1,0 +1,31 @@
+@use "normalize.css";
+
+@font-face {
+    font-family: "TitanOne";
+    src: local("Titan One"), url("fonts/TitanOne.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url("fonts/Nunito-VariableFont_wght.ttf") format("truetype");
+    font-weight: 200 1000;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url("fonts/Nunito-VariableFont_wght.ttf") format("truetype");
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url("fonts/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+    font-weight: 200 1000;
+    font-style: italic;
+}
