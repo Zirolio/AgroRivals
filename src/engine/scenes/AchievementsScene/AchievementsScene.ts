@@ -1,16 +1,16 @@
 import Phaser from "phaser";
 import type Sizer from "phaser3-rex-plugins/templates/ui/sizer/Sizer";
-import ShopTopBar from "./components/ShopTopBar";
-import ShopItemContainer from "./components/ShopItemsContainer";
-import ShopItem from "./components/ShopItem";
+import ShopTopBar from "./components/AchievementsTopBar";
+import ShopItemContainer from "./components/AchievementsContainer";
+import ShopItem from "./components/Achivment/Achievement";
 import { RENDER_BOUNDS } from "@app/constants";
 
-export default class ShopScene extends Phaser.Scene {
+export default class AchievementsScene extends Phaser.Scene {
     private root!: Sizer;
     private boundsGraphics?: Phaser.GameObjects.Graphics;
 
     constructor() {
-        super("ShopScene");
+        super("AchievementsScene");
     }
 
     init() {
@@ -33,7 +33,8 @@ export default class ShopScene extends Phaser.Scene {
             orientation: "vertical",
             origin: 0,
             width: width,
-            height: height
+            height: height,
+            sizerEvents: true
         });
         this.root.addBackground(this.add.rectangle(0, 0, 1, 1, 0xeff6ff));
         // this.root.setMinSize(width, height).layout();
@@ -52,13 +53,15 @@ export default class ShopScene extends Phaser.Scene {
                 }),
             ]
         });
-        shopItemsContainer.addShopItem(new ShopItem(this));
+        shopItemsContainer.addShopItem(new ShopItem(this, {
+                    scene: this
+                }));
         this.root.add(shopItemsContainer, { expand: true, proportion: 1 });
         
         this.root.layout();
         // topBarLayout.y += 10;
     }
-    
+
     update(_time: number, _delta: number): void {
         if (!RENDER_BOUNDS) {
             this.boundsGraphics?.destroy();

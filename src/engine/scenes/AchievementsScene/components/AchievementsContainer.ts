@@ -1,6 +1,6 @@
 import ScrollablePanel from "phaser3-rex-plugins/templates/ui/scrollablepanel/ScrollablePanel";
 import type Sizer from "phaser3-rex-plugins/templates/ui/sizer/Sizer";
-import ShopItem from "./ShopItem";
+import ShopItem from "./Achivment/Achievement";
 import type { Scene } from "phaser";
 import type { UIBaseConfig } from "@shared/config/interfaces/UIBaseConfig";
 

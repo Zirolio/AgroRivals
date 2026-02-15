@@ -1,8 +1,9 @@
 import type RoundRectangle from "phaser3-rex-plugins/plugins/roundrectangle";
 import type { Scene } from "phaser";
 import type { UI3DBackgroundConfig } from "./UI3DBackground.interface";
+import OverlapSizer from "phaser3-rex-plugins/templates/ui/overlapsizer/OverlapSizer";
 
-export default class UI3DBackground extends Phaser.GameObjects.Container {
+export default class UI3DBackground extends OverlapSizer {
     private shadow: RoundRectangle;
     private bg: RoundRectangle;
 
@@ -24,7 +25,9 @@ export default class UI3DBackground extends Phaser.GameObjects.Container {
         this.bg = scene.rexUI.add.roundRectangle(0, 0, 1, 1, radius, color);
         if (typeof borderColor !== "undefined" && typeof borderWidth !== "undefined") this.bg.setStrokeStyle(borderWidth, borderColor);
 
-        this.add([ this.shadow, this.bg ]);
+        // this.add([ this.shadow, this.bg ]);
+        this.add(this.shadow, { expand: false });
+        this.add(this.bg, { expand: false });
 
         scene.add.existing(this);
     }
@@ -32,19 +35,16 @@ export default class UI3DBackground extends Phaser.GameObjects.Container {
     setSize(width: number, height: number): this {
         super.setSize(width, height);
 
-        this.shadow.width = width;
-        this.shadow.height = height;
-
-        this.bg.width = width;
-        this.bg.height = height;
+        this.shadow.resize(width, height);
+        this.bg.resize(width, height);
 
         return this;
     }
 
     onPointerDown() {
-        this.shadow.y = 0;
+        this.shadow.y = this.y;
     }
     onPointerUp() {
-        this.shadow.y = this.pressOffset;
+        this.shadow.y = this.y + this.pressOffset;
     }
 }

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { ArrowLeft, Play, Settings, ShoppingBag, Trophy } from "lucide-static";
+import { ArrowLeft, Crown, Play, Settings, ShoppingBag, Trophy } from "lucide-static";
 import { GAME_FONT } from "@app/constants";
 
 export default class LoaderScene extends Phaser.Scene {
@@ -45,11 +45,13 @@ export default class LoaderScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Loading
-        this.addLucideTexture('ShoppingBag', ShoppingBag, 64);
-        this.addLucideTexture('Trophy', Trophy, 64);
-        this.addLucideTexture('Settings', Settings, 64);
-        this.addLucideTexture('ArrowLeft', ArrowLeft, 64);
-        this.addLucideTexture('Play', Play, 64, undefined, "#ffffff");
+        this.addLucideTexture("ShoppingBag", ShoppingBag, 64);
+        this.addLucideTexture("Crown", Crown, 64);
+        this.addLucideTexture("Trophy", Trophy, 64);
+        this.addLucideTexture("Settings", Settings, 64);
+        this.addLucideTexture("ArrowLeft", ArrowLeft, 64);
+        this.addLucideTexture("ArrowLeft_6b7280", ArrowLeft, 64, "#6b7280");
+        this.addLucideTexture("Play", Play, 64, undefined, "#ffffff");
 
 
         this.load.image("coin", "image/coin.png");
@@ -76,7 +78,7 @@ export default class LoaderScene extends Phaser.Scene {
         this.load.on("complete", () => {
             this.loadingText.setText("Ready!");
             this.time.delayedCall(500, () => {
-                this.scene.start("ShopScene");
+                this.scene.start("MenuScene");
             });
         });
     }

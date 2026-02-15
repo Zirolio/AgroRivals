@@ -4,7 +4,7 @@ import t from "@shared/utils/translation";
 import UICoinsCounter from "@shared/ui/UICoinsCounter/UICoinsCounter";
 import type { UIBaseConfig } from "@shared/config/interfaces/UIBaseConfig";
 
-export default class ShopTopBar extends GridSizer {
+export default class AchievementsScene extends GridSizer {
     constructor(scene: Scene, config: UIBaseConfig & { width: number, fontSize: number }) {
         const { width, fontSize } = config;
 
@@ -35,15 +35,15 @@ export default class ShopTopBar extends GridSizer {
                 icon: scene.add.image(0, 0, "ArrowLeft_6b7280").setDisplaySize(28, 28),
                 space: {
                     iconLeft: 10
-                },
+                }
             }).setInteractive({ cursor: "pointer" })
                 .onClick(() => scene.scene.start("MenuScene")),
-
+        
             { column: 0, row: 0, align: "left", padding: { left: 20 } }
         );
         
         this.add(scene.rexUI.add.label({
-            text: scene.add.text(0, 0, t("shop").toUpperCase(), {
+            text: scene.add.text(0, 0, t("achievements").toUpperCase(), {
                 fontFamily: "Nunito",
                 fontSize: `${fontSize}px`,
                 color: "#2563eb",

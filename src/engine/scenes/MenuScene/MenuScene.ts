@@ -3,11 +3,13 @@ import type Sizer from "phaser3-rex-plugins/templates/ui/sizer/Sizer";
 import Title from "./components/Title";
 import Subtitle from "./components/Subtitle";
 import t from "@shared/utils/translation";
-import UICoinsCounter from "@shared/ui/CoinsCounter/UICoinsCounter";
+import UICoinsCounter from "@shared/ui/UICoinsCounter/UICoinsCounter";
 import UISettingsButton from "@shared/ui/UISettingsButton/UISettingsButton";
 import UIButton from "@shared/ui/UIButton/UIButton";
+import { RENDER_BOUNDS } from "@app/constants";
 
 export default class MenuScene extends Phaser.Scene {
+    private boundsGraphics?: Phaser.GameObjects.Graphics;
     private snowEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
     
     private root!: Sizer;
@@ -23,17 +25,13 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     create() {
-        // 1. Фон: Градиент (from-blue-600 via-blue-400 to-white)
         this.bgGradient = this.add.graphics();
         this.updateBackground();
 
-        // 2. Снег
         this.createSnowfall();
 
-        // 3. UI
         this.setupUI();
 
-        // 4. Ресайз
         this.scale.on("resize", this.handleResize, this);
     }
 
@@ -59,7 +57,7 @@ export default class MenuScene extends Phaser.Scene {
         });
         this.root.setMinSize(width, height).layout();
 
-        // --- SAFE TOP BAR (Coins & Settings) ---
+        // ====== SAFE TOP BAR ======
         const safeTop = Math.max(20, window.visualViewport?.offsetTop || 0);
         const topBarLayout = this.rexUI.add.sizer({
             orientation: "horizontal"
@@ -143,8 +141,7 @@ export default class MenuScene extends Phaser.Scene {
                 iconKey: "ShoppingBag",
                 iconSize: 28,
                 orientation: "vertical",
-                onClick: () => {
-                }
+                onClick: () => this.scene.start("ShopScene"),
             }), { align: "center", expand: false, padding: { right: 20 } })
             .add(new UIButton(this, {
                 width: subBtnWidth,
@@ -159,8 +156,7 @@ export default class MenuScene extends Phaser.Scene {
                 iconKey: "Trophy",
                 iconSize: 28,
                 orientation: "vertical",
-                onClick: () => {
-                }
+                onClick: () => this.scene.start("AchievementsScene"),
             })).layout();
             
             
@@ -195,6 +191,22 @@ export default class MenuScene extends Phaser.Scene {
         });
         
         this.snowEmitter.fastForward(5000).start();
+    }
+
+    update(_time: number, _delta: number): void {
+        if (!RENDER_BOUNDS) {
+            this.boundsGraphics?.destroy();
+            this.boundsGraphics = undefined;
+        } else {
+            if (!this.boundsGraphics) this.boundsGraphics = this.add.graphics().setDepth(Infinity);
+
+            this.boundsGraphics.clear();
+            this.root.drawBounds(this.boundsGraphics, {
+                color: 0xff0000,
+                lineWidth: 2,
+                name: true,
+            });
+        }
     }
 
     private handleResize(_gameSize: Phaser.Structs.Size) {

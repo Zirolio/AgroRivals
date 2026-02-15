@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 import MenuScene from "../engine/scenes/MenuScene/MenuScene";
-import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin';
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js";
 import "./main.scss"; 
 import LoaderScene from "../engine/scenes/LoaderScene/LoaderScene";
 import ShopScene from "../engine/scenes/ShopScene/ShopScene";
+import AchievementsScene from "../engine/scenes/AchievementsScene/AchievementsScene";
+// import RoundRectangleProgressPlugin from "phaser3-rex-plugins/plugins/roundrectangleprogress-plugin";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -16,10 +18,10 @@ const config: Phaser.Types.Core.GameConfig = {
   backgroundColor: "#1d1d1d",
 
   scale: {
-    mode: Phaser.Scale.RESIZE, // Важно: Phaser сам меняет размер холста
-    parent: 'app',
-    width: '100%',
-    height: '100%',
+    mode: Phaser.Scale.RESIZE,
+    parent: "app",
+    width: "100%",
+    height: "100%",
   },
 
   physics: {
@@ -31,9 +33,14 @@ const config: Phaser.Types.Core.GameConfig = {
   },
 
   plugins: {
+    /* global: [{
+        key: "scene.roundRectangleProgress",
+        plugin: RoundRectangleProgressPlugin,
+        start: true
+    }], */
     scene: [
       {
-        key: "rexUI",
+        key: "RexUIPlugin",
         plugin: RexUIPlugin,
         mapping: "rexUI"
       }
@@ -46,12 +53,11 @@ const config: Phaser.Types.Core.GameConfig = {
 
   render: {
     antialias: true,
-    pixelArt: false, // Установите false для плавных векторных фигур и текста
+    pixelArt: false,
     roundPixels: false
   },
 
-  scene: [LoaderScene, MenuScene, ShopScene],
+  scene: [LoaderScene, MenuScene, ShopScene, AchievementsScene],
 };
 
-// Создаем игру
 new Phaser.Game(config);

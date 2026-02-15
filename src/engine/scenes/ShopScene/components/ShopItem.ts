@@ -5,7 +5,7 @@ import UI3DBackground from "@shared/ui/UI3DBackground/UI3DBackground";
 import GridSizer from "phaser3-rex-plugins/templates/ui/gridsizer/GridSizer";
 
 export default class ShopItem extends GridSizer {
-    constructor(scene: Scene, _config: UIBaseConfig) {
+    constructor(scene: Scene, _config?: UIBaseConfig) {
 
         super(scene, {
             column: 2,
