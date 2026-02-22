@@ -7,6 +7,7 @@ import UICoinsCounter from "@shared/ui/UICoinsCounter/UICoinsCounter";
 import UISettingsButton from "@shared/ui/UISettingsButton/UISettingsButton";
 import UIButton from "@shared/ui/UIButton/UIButton";
 import { RENDER_BOUNDS } from "@app/constants";
+import CreateSnowfall from "@shared/utils/CreateSnowfall";
 
 export default class MenuScene extends Phaser.Scene {
     private boundsGraphics?: Phaser.GameObjects.Graphics;
@@ -28,7 +29,7 @@ export default class MenuScene extends Phaser.Scene {
         this.bgGradient = this.add.graphics();
         this.updateBackground();
 
-        this.createSnowfall();
+        this.snowEmitter = CreateSnowfall(this);
 
         this.setupUI();
 
@@ -74,7 +75,6 @@ export default class MenuScene extends Phaser.Scene {
             expand: false,
         });
         
-        topBarLayout.layout();
         this.root.add(topBarLayout, {
             align: "right",
             expand: false,
@@ -116,7 +116,7 @@ export default class MenuScene extends Phaser.Scene {
             borderColor: 0x60a5fa,
             borderWidth: 4,
             pressOffset: 8,
-            iconKey: "Play",
+            icon: "Play",
             onClick: () => {
             }
         }), {
@@ -138,7 +138,7 @@ export default class MenuScene extends Phaser.Scene {
                 /* borderColor: 0xfacc15,
                 borderWidth: 4, */
                 pressOffset: 4,
-                iconKey: "ShoppingBag",
+                icon: "ShoppingBag",
                 iconSize: 28,
                 orientation: "vertical",
                 onClick: () => this.scene.start("ShopScene"),
@@ -153,7 +153,7 @@ export default class MenuScene extends Phaser.Scene {
                 /* borderColor: 0xc084fc,
                 borderWidth: 4, */
                 pressOffset: 4,
-                iconKey: "Trophy",
+                icon: "Trophy",
                 iconSize: 28,
                 orientation: "vertical",
                 onClick: () => this.scene.start("AchievementsScene"),
@@ -171,26 +171,6 @@ export default class MenuScene extends Phaser.Scene {
         this.root.addSpace();
 
         this.root.layout();
-    }
-
-    private createSnowfall() {
-        this.snowEmitter = this.add.particles(0, -20, "snowflake", {
-            x: { min: 0, max: this.scale.width },
-            quantity: 2,
-            frequency: 300,
-            lifespan: 10000,
-            speedY: { min: 50, max: 150 },
-            scale: { min: 0.03, max: 0.05 },
-            alpha: { start: 0.6, end: 0 },
-            blendMode: "ADD",
-            emitting: false
-        });
-        
-        this.snowEmitter.onParticleEmit((p) => {
-            p.setPosition(this.scale.width * Math.random(), -20);
-        });
-        
-        this.snowEmitter.fastForward(5000).start();
     }
 
     update(_time: number, _delta: number): void {

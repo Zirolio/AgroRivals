@@ -84,7 +84,7 @@ export default class ShopItem extends GridSizer {
             color: 0x22c55e,
             shadowColor: 0x15803d,
             pressOffset: 4,
-            iconKey: "coin",
+            icon: "coin",
             iconSize: 16,
             padding: 12,
             onClick: () => {

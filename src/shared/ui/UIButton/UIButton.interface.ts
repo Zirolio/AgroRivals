@@ -6,17 +6,19 @@ export interface UIButtonConfig extends UIBaseConfig, Partial<UI3DBackgroundConf
     width?: number;
     height?: number;
 
-    text: string;
+    text?: string | Phaser.GameObjects.GameObject;
     fontSize?: number;
     fontWeight?: number | string;
     fontFamily?: string;
 
-    iconKey?: string;
+    icon?: string | Phaser.GameObjects.GameObject;
     iconSize?: number;
 
     orientation?: Label.IConfig["orientation"];
 
     padding?: number | { top?: number; bottom?: number; left?: number; right?: number };
+
+    enabled?: boolean;
 
     onClick?: () => void;
 }

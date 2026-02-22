@@ -5,6 +5,9 @@ import "./main.scss";
 import LoaderScene from "../engine/scenes/LoaderScene/LoaderScene";
 import ShopScene from "../engine/scenes/ShopScene/ShopScene";
 import AchievementsScene from "../engine/scenes/AchievementsScene/AchievementsScene";
+import GameScene from "@shared/utils/GameScene";
+import MapScene from "../engine/scenes/MapScene/MapScene";
+import MapUIScene from "../engine/scenes/MapScene/MapUIScene/MapUIScene";
 // import RoundRectangleProgressPlugin from "phaser3-rex-plugins/plugins/roundrectangleprogress-plugin";
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -20,8 +23,8 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.RESIZE,
     parent: "app",
-    width: "100%",
-    height: "100%",
+    /* width: "100%",
+    height: "100%", */
   },
 
   physics: {
@@ -57,7 +60,7 @@ const config: Phaser.Types.Core.GameConfig = {
     roundPixels: false
   },
 
-  scene: [LoaderScene, MenuScene, ShopScene, AchievementsScene],
+  scene: [LoaderScene, MenuScene, ShopScene, AchievementsScene, MapScene, GameScene, MapUIScene],
 };
 
 new Phaser.Game(config);

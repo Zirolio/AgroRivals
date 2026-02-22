@@ -5,7 +5,7 @@ import OverlapSizer from "phaser3-rex-plugins/templates/ui/overlapsizer/OverlapS
 
 export default class UI3DBackground extends OverlapSizer {
     private shadow: RoundRectangle;
-    private bg: RoundRectangle;
+    public readonly bg: RoundRectangle;
 
     private pressOffset: number;
     
