@@ -1,11 +1,15 @@
 import CreateSnowfall from "@shared/utils/CreateSnowfall";
 import Phaser from "phaser";
 import Level from "./components/Level/UILevel";
+import type { UILevelConfig } from "./components/Level/UILevel.interface";
+import type { MapConfig } from "@shared/config/interfaces/MapConfig";
 
 export default class MapScene extends Phaser.Scene {
     private snowEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
-    
+    private bgGraphics?: Phaser.GameObjects.Graphics;
+    private mapConfig?: MapConfig;
+    private mapElements: Set<Phaser.GameObjects.Image | Level | Phaser.GameObjects.Container> = new Set();
 
     constructor() {
         super("MapScene");
@@ -15,10 +19,12 @@ export default class MapScene extends Phaser.Scene {
         this.scene.launch("MapUIScene");
         this.scene.bringToTop("MapUIScene");
 
+        this.mapElements.clear();
         this.snowEmitter = CreateSnowfall(this);
 
         const currentLevel = 10;
         const map = this.generateMap(currentLevel);
+        this.mapConfig = map;
 
         this.cameras.main.setBounds(
             0,
@@ -27,31 +33,38 @@ export default class MapScene extends Phaser.Scene {
             map.totalHeight
         ).setScroll(map.totalHeight);
 
-        const g = this.add.graphics();
-        g.fillStyle(0xffffff);
-        g.fillRect(0, 0, this.scale.width, map.totalHeight);
+        this.bgGraphics = this.add.graphics()
+            .fillStyle(0xffffff)
+            .fillRect(0, 0, this.scale.width, map.totalHeight);
 
-        map.decorElements.forEach(el => {
-            const sprite = this.add.image(el.x / 100 * this.scale.width, el.y, el.type);
-            sprite.setScale(el.scale);
-            sprite.setOrigin(0.5, 1);
+        map.decorElements.forEach(config => {
+            const sprite = this.add.image(config.x / 100 * this.scale.width, config.y, config.type)
+                .setScale(config.scale)
+                .setOrigin(0.5, 1)
+                .setData("config", config);
+            this.mapElements.add(sprite);
         });
 
         map.levels.forEach((lvl, index) => {
             const pt = map.pathPoints[index];
             if (!pt) return;
 
-            // Set camera position
-            this.cameras.main.setScroll(pt.y);
-
-            const level = new Level(this, {
-                x: pt.x / 100 * this.scale.width,
+            const config: UILevelConfig = {
+                x: pt.x,
                 y: pt.y,
                 hasIsland: lvl % 2 !== 0,
                 type: lvl > currentLevel ? "locked" :
                         lvl < currentLevel ? "passed" : "current"
-            });
-            level.layout();
+            };
+
+            // Set camera position
+            this.cameras.main.setScroll(config.y);
+
+            const level = new Level(this, config)
+                .layout()
+                .setData("config", config);
+            
+            this.mapElements.add(level);
 
             /* node.setSize(50, 40);
             node.setInteractive();
@@ -63,17 +76,22 @@ export default class MapScene extends Phaser.Scene {
             }); */
         });
 
-        map.cloudCover.forEach(c => {
-            const cloud = this.add.image(c.x / 100 * this.scale.width, c.y, "cloud");
-            cloud.setScale(c.scale);
-            cloud.setDepth(50);
+        map.cloudCover.forEach(config => {
+            const cloud = this.add.image(config.x / 100 * this.scale.width, config.y, "cloud")
+                .setScale(config.scale)
+                .setDepth(50)
+                .setData("config", config);
+            
+            this.mapElements.add(cloud);
         });
 
         // Santa house
-        const centerX = this.scale.width / 2;
-        const y = map.totalHeight - 140;
+        const santaHouseConfig = {
+            x: this.scale.width / 2,
+            y: map.totalHeight - 140
+        };
 
-        const santaDecorContainer = this.add.container(centerX, y)
+        const santaDecorContainer = this.add.container(santaHouseConfig.x, santaHouseConfig.y)
             .setSize(200, 200)
             .setDepth(5);
 
@@ -85,29 +103,50 @@ export default class MapScene extends Phaser.Scene {
             .setOrigin(0.5, 1)
             .setScale(0.8);
 
-        santaDecorContainer.add([santa, sleigh]);
+        santaDecorContainer.add([santa, sleigh])
+            .setData("config", santaHouseConfig);
+        this.mapElements.add(santaDecorContainer);
 
         this.input.on("wheel", (_pointer: Phaser.Input.Pointer, _gameObjects: Phaser.GameObjects.GameObject[], _deltaX: number, deltaY: number) => {
             this.cameras.main.scrollY += deltaY * 0.5;
         });
+
+        this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+            this.onResize(gameSize.width, gameSize.height);
+        });
     }
 
-    drawPath(pathPoints: { x: number, y: number }[]) {
-        const g = this.add.graphics();
-        g.lineStyle(28, 0xe2e8f0);
+    private onResize(width: number, height: number) {
+        if (!this.mapConfig) return;
 
-        for (let i = 0; i < pathPoints.length - 1; i++) {
-            const pt = pathPoints[i];
-            const next = pathPoints[i + 1];
-
-            const curve = new Phaser.Curves.QuadraticBezier(
-                new Phaser.Math.Vector2(pt.x, pt.y),
-                new Phaser.Math.Vector2(pt.x, pt.y - 80),
-                new Phaser.Math.Vector2(next.x, next.y)
-            );
-
-            curve.draw(g, 64);
+        this.cameras.main.setBounds(0, 0, width, this.mapConfig.totalHeight);
+        
+        if (this.bgGraphics) {
+            this.bgGraphics.clear();
+            this.bgGraphics.fillStyle(0xffffff, 1);
+            this.bgGraphics.fillRect(0, 0, width, this.mapConfig.totalHeight);
         }
+
+        this.mapElements.forEach(el => {
+            const config: { x: number, y: number } = el.getData("config");
+            el.setPosition(config.x / 100 * this.scale.width, config.y);
+            // if (el instanceof Level) el.layout();
+        });
+        /* this.map.decorElements.forEach(el => {
+            if (!el.sprite) return;
+            el.sprite.x = el.x / 100 * width;
+        });
+
+        this.map.levels.forEach((lvl, idx) => {
+            const pt = this.map.pathPoints[idx];
+            if (!pt || !lvl) return;
+            lvl.setPosition(pt.x / 100 * width, pt.y);
+        });
+
+        this.map.cloudCover.forEach(c => {
+            if (!c.sprite) return;
+            c.sprite.x = c.x / 100 * width;
+        }); */
     }
 
     generateMap(currentLevel: number) {

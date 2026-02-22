@@ -24,6 +24,6 @@ export default class Level extends OverlapSizer {
         node.setButtonEnable(type !== "locked");
         this.add(node, { expand: false });
         
-        this.setPosition(x, y);
+        this.setPosition(x / 100 * scene.scale.width, y);
     }
 }
